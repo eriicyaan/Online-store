@@ -1,7 +1,6 @@
 package servlet;
 
 import entity.User;
-import exception.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

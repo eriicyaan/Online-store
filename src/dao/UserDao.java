@@ -7,6 +7,7 @@ import mapper.UserMapper;
 import util.ConnectionManager;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +26,28 @@ public class UserDao implements Dao<Integer, User>{
             SELECT * FROM users
             WHERE email = ? AND password = ?;
             """;
+    private final String FIND_ALL_SQL = """
+            SELECT *
+            FROM users
+            """;
 
     @Override
     public List<User> findAll() {
-        return List.of();
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<User> users = new ArrayList<>();
+
+            while(resultSet.next()) {
+                users.add(userMapper.mapFrom(resultSet));
+            }
+
+            return users;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

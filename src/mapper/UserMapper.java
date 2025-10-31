@@ -24,9 +24,20 @@ public class UserMapper implements Mapper<UserDto, User> {
                 .password(obj.getPassword())
                 .role(Role.valueOf(obj.getRole()))
                 .gender(Gender.valueOf(obj.getGender()))
+                .balance(Double.parseDouble(obj.getBalance()))
                 .build();
     }
 
+    public UserDto mapTo(User obj) {
+        return UserDto.builder()
+                .username(obj.getUsername())
+                .password(obj.getPassword())
+                .email(obj.getEmail())
+                .role(obj.getRole().name())
+                .gender(obj.getGender().name())
+                .balance("" + obj.getBalance())
+                .build();
+    }
 
     public User mapFrom(ResultSet resultSet) {
         try {
@@ -37,6 +48,7 @@ public class UserMapper implements Mapper<UserDto, User> {
                     .email(resultSet.getString("email"))
                     .role(Role.find(resultSet.getString("role")).get())
                     .gender(Gender.find(resultSet.getString("gender")).get())
+                    .balance(resultSet.getDouble("balance"))
                     .build();
 
         } catch (SQLException e) {

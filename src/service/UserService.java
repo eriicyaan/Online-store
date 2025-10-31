@@ -12,6 +12,7 @@ import validator.UsersValidator;
 import validator.ValidationResult;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,6 +35,12 @@ public class UserService {
 
     public Optional<User> loginUser(String email, String password) {
         return userDao.findByEmailAndPassword(email, password);
+    }
+
+    public List<UserDto> getListOfUsers() {
+        return userDao.findAll().stream()
+                .map(mapper::mapTo)
+                .toList();
     }
 
     public static UserService getInstance() {

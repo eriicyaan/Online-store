@@ -15,10 +15,12 @@
         <main>
             <c:if test="${sessionScope.role == 'ADMIN'}">
                 <a href="${pageContext.request.contextPath}/admin"><button type="button">Админ панель</button></a>
+                <a href="${pageContext.request.contextPath}/users"><button type="button">Список пользователей</button></a>
             </c:if>
 
             <c:if test="${sessionScope.role == 'USER'}">
                 <a href="${pageContext.request.contextPath}/basket?user_id=${sessionScope.user.id}"><button>Корзина</button></a>
+                <p style="position: absolute; top: 0; right: 0;">Balance: ${user.balance}</p>
             </c:if>
 
             <a href="${pageContext.request.contextPath}/goods"><button type="button">Список товаров</button></a>
