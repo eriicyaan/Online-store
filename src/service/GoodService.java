@@ -3,6 +3,7 @@ package service;
 import dao.GoodDao;
 import dto.GoodDto;
 import entity.Good;
+import exception.GoodNotFoundException;
 import exception.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import validator.ValidationResult;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -42,6 +44,14 @@ public class GoodService {
         return goodDao.findAll().stream()
                 .map(mapper::mapTo)
                 .toList();
+    }
+
+    public double getCost(int goodId) throws GoodNotFoundException {
+        Optional<Good> maybeGood = goodDao.findById(goodId);
+        if(maybeGood.isPresent()) {
+            return maybeGood.get().getCost();
+        }
+        throw new GoodNotFoundException();
     }
 
     public static GoodService getInstance() {

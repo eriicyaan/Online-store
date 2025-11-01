@@ -1,8 +1,6 @@
 package servlet;
 
-import dao.GoodDao;
 import dto.GoodDto;
-import entity.Good;
 import exception.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -43,7 +41,7 @@ public class AdminServlet extends HttpServlet {
 
         try {
             goodService.addGood(good, req);
-            resp.sendRedirect("/account");
+            resp.sendRedirect("/admin");
         } catch (ValidationException e) {
             req.setAttribute("errors", e.getErrors());
             doGet(req, resp);

@@ -30,6 +30,16 @@ public class UserDao implements Dao<Integer, User>{
             SELECT *
             FROM users
             """;
+    private final String FIND_BY_ID_SQL= """
+            SELECT *
+            FROM users
+            WHERE id = ?
+            """;
+    private final String UPDATE_SQL = """
+            UPDATE users
+            SET username = ?, password = ?, email = ?, role = ?, gender = ?, balance = ?
+            WHERE id = ?
+            """;
 
     @Override
     public List<User> findAll() {
@@ -52,7 +62,21 @@ public class UserDao implements Dao<Integer, User>{
 
     @Override
     public Optional<User> findById(Integer id) {
-        return Optional.empty();
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return Optional.ofNullable(userMapper.mapFrom(resultSet));
+            }
+
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -62,6 +86,22 @@ public class UserDao implements Dao<Integer, User>{
 
     @Override
     public void update(User entity) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+
+            preparedStatement.setString(1, entity.getUsername());
+            preparedStatement.setString(2, entity.getPassword());
+            preparedStatement.setString(3, entity.getEmail());
+            preparedStatement.setString(4, entity.getRole().name());
+            preparedStatement.setString(5, entity.getGender().name());
+            preparedStatement.setDouble(6, entity.getBalance());
+            preparedStatement.setInt(7, entity.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

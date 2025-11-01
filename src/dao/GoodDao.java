@@ -29,6 +29,10 @@ public class GoodDao implements Dao<Integer, Good>{
             DELETE FROM goods
             WHERE id = ?
             """;
+    private final String FIND_BY_ID_SQL = """
+            SELECT * FROM goods
+            WHERE id = ?
+            """;
 
     @Override
     public List<Good> findAll() {
@@ -50,7 +54,21 @@ public class GoodDao implements Dao<Integer, Good>{
 
     @Override
     public Optional<Good> findById(Integer id) {
-        return Optional.empty();
+        try (Connection connection = ConnectionManager.get();
+                 PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return Optional.ofNullable(goodMapper.mapFrom(resultSet));
+            }
+
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
