@@ -31,7 +31,7 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int userId = ((User) req.getSession().getAttribute("user")).getId();
+        int userId = ((UserDto) req.getSession().getAttribute("user")).getId();
 
         List<GoodDto> allOrders = orderService.getAllOrders(userId);
 
@@ -42,21 +42,22 @@ public class OrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int goodId = Integer.parseInt(req.getParameter("good_id"));
-        int userId = ((User)(req.getSession().getAttribute("user"))).getId();
+        UserDto userDto = (UserDto) req.getSession().getAttribute("user");
 
         OrderDto orderDto = OrderDto.builder()
                 .goodId(goodId)
-                .userId(userId)
+                .userId(userDto.getId())
                 .build();
 
         try {
-            orderService.addOrder(orderDto);
-            basketService.deleteGood(userId, goodId);
+            orderService.addOrder(userDto, orderDto);
 
-            resp.sendRedirect("/basket?user_id=" + userId);
+            basketService.deleteGood(userDto.getId(), goodId);
+
+            resp.sendRedirect("/basket?user_id=" + userDto.getId());
 
         } catch (BalanceException e) {
-            resp.sendRedirect("/basket?user_id=" + userId + "&error=1");
+            resp.sendRedirect("/basket?user_id=" + userDto.getId() + "&error=1");
         }
 
     }

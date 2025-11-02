@@ -1,6 +1,8 @@
 package servlet;
 
+import dto.UserDto;
 import entity.User;
+import exception.UserNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +12,7 @@ import service.UserService;
 import util.JspHelper;
 
 import java.io.IOException;
-import java.util.Optional;
+
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -22,14 +24,14 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Optional<User> user = userService.loginUser(req.getParameter("email"), req.getParameter("password"));
-
-        if (user.isPresent()) {
-            req.getSession().setAttribute("user", user.get());
-            req.getSession().setAttribute("role", user.get().getRole().name());
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            UserDto user = userService.loginUser(req.getParameter("email"), req.getParameter("password"));
+            req.getSession().setAttribute("user", user);
+            req.getSession().setAttribute("role", user.getRole());
             resp.sendRedirect("/account");
-        } else {
+
+        } catch (UserNotFoundException e) {
             resp.sendRedirect("/login?error=1");
         }
     }

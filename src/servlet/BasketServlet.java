@@ -2,7 +2,7 @@ package servlet;
 
 import dto.BasketDto;
 import dto.GoodDto;
-import entity.User;
+import dto.UserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,7 +38,7 @@ public class BasketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int good_id = Integer.parseInt(req.getParameter("good_id"));
-        int user_id = ((User)req.getSession().getAttribute("user")).getId();
+        int user_id = ((UserDto) req.getSession().getAttribute("user")).getId();
 
         BasketDto basket = BasketDto.builder()
                 .user_id(user_id)

@@ -19,6 +19,7 @@ public class UserMapper implements Mapper<UserDto, User> {
     @Override
     public User mapFrom(UserDto obj) {
         return User.builder()
+                .id(obj.getId())
                 .username(obj.getUsername())
                 .email(obj.getEmail())
                 .password(obj.getPassword())
@@ -30,6 +31,7 @@ public class UserMapper implements Mapper<UserDto, User> {
 
     public UserDto mapTo(User obj) {
         return UserDto.builder()
+                .id(obj.getId())
                 .username(obj.getUsername())
                 .password(obj.getPassword())
                 .email(obj.getEmail())

@@ -33,7 +33,7 @@ public class OrderService {
                 .map(goodMapper::mapTo).toList();
     }
 
-    public void addOrder(OrderDto order) throws BalanceException {
+    public void addOrder(UserDto userDto, OrderDto order) throws BalanceException {
         try {
             double userBalance = userService.getBalance(order.getUserId());
             double goodCost = goodService.getCost(order.getGoodId());
@@ -43,15 +43,13 @@ public class OrderService {
             }
 
             orderDao.save(orderMapper.mapFrom(order));
-            UserDto user = userService.getUser(order.getUserId());
-            user.setBalance("" + (userBalance - goodCost));
+            userDto.setBalance("" + (userBalance - goodCost));
 
-            userService.updateBalance(order.getUserId(), user);
+            userService.updateBalance(order.getUserId(), userDto);
 
         } catch (UserNotFoundException | GoodNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static OrderService getInstance() {

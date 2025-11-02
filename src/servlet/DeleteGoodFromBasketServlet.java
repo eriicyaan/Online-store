@@ -1,6 +1,6 @@
 package servlet;
 
-import entity.User;
+import dto.UserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +17,7 @@ public class DeleteGoodFromBasketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int good_id = Integer.parseInt(req.getParameter("good_id"));
-        int user_id = ((User) req.getSession().getAttribute("user")).getId();
+        int user_id = ((UserDto) req.getSession().getAttribute("user")).getId();
 
         basketService.deleteGood(user_id, good_id);
         resp.sendRedirect("/basket?user_id=" + user_id);

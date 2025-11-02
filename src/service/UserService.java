@@ -33,8 +33,13 @@ public class UserService {
         }
     }
 
-    public Optional<User> loginUser(String email, String password) {
-        return userDao.findByEmailAndPassword(email, password);
+    public UserDto loginUser(String email, String password) throws UserNotFoundException {
+        Optional<User> user = userDao.findByEmailAndPassword(email, password);
+
+        if(user.isPresent()) {
+            return userMapper.mapTo(user.get());
+        }
+        throw new UserNotFoundException();
     }
 
     public List<UserDto> getListOfUsers() {
@@ -56,15 +61,6 @@ public class UserService {
         User user = userMapper.mapFrom(newUser);
         user.setId(userId);
         userDao.update(userMapper.mapFrom(newUser));
-    }
-
-    public UserDto getUser(int userId) throws UserNotFoundException {
-        Optional<User> maybeUser = userDao.findById(userId);
-
-        if(maybeUser.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        return userMapper.mapTo(maybeUser.get());
     }
 
     public static UserService getInstance() {
