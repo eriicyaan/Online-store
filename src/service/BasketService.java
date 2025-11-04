@@ -18,8 +18,9 @@ public class BasketService {
     private final GoodMapper goodMapper = GoodMapper.getInstance();
     private final BasketMapper basketMapper = BasketMapper.getInstance();
 
-    public List<GoodDto> getAllGoods(int id) throws SQLException {
-        return basketDao.getAllAddedGoods(id)
+    public List<GoodDto> getAllGoods(int userId) throws SQLException {
+
+        return basketDao.getAllAddedGoods(userId)
                 .stream()
                 .map(goodMapper::mapTo)
                 .toList();

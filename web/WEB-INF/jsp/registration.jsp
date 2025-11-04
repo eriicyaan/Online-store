@@ -26,6 +26,7 @@
             <label >
                 <input type="radio" name="role" value="ADMIN" required>Admin<br>
                 <input type="radio" name="role" value="USER" required>User
+                <input type="hidden" name="balance" value="0">
             </label><br>
             <button type="submit"><fmt:message key="user.button.registration"/></button><br>
             <c:if test="${not empty requestScope.errors}">

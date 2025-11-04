@@ -29,10 +29,12 @@ public class RegistrationServlet extends HttpServlet {
                 .username(req.getParameter("username"))
                 .password(req.getParameter("password"))
                 .email(req.getParameter("email"))
+                .balance(req.getParameter("balance"))
                 .role(Role.valueOf(req.getParameter("role")).name())
                 .gender(Gender.valueOf(req.getParameter("gender")).name())
                 .build();
         try {
+            System.out.println(user);
             userService.registerUser(user);
             resp.sendRedirect("/login");
         }

@@ -22,10 +22,10 @@ public class BasketServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("user_id");
+        int userId = ((UserDto) req.getSession().getAttribute("user")).getId();
 
         try {
-            List<GoodDto> userGoods = basketService.getAllGoods(Integer.parseInt(userId));
+            List<GoodDto> userGoods = basketService.getAllGoods(userId);
 
             req.setAttribute("userGoods", userGoods);
             req.getRequestDispatcher(JspHelper.getPath("basket")).forward(req, resp);

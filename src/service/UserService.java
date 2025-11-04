@@ -9,7 +9,7 @@ import exception.ValidationException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import mapper.UserMapper;
-import validator.UsersValidator;
+import validator.UserValidator;
 import validator.ValidationResult;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserService {
     private static final UserService INSTANCE = new UserService();
 
-    private final UsersValidator validator = UsersValidator.getInstance();
+    private final UserValidator validator = UserValidator.getInstance();
     private final UserDao userDao = UserDao.getInstance();
     private final UserMapper userMapper = UserMapper.getInstance();
 
@@ -48,16 +48,32 @@ public class UserService {
                 .toList();
     }
 
-    public double getBalance(int userId) throws UserNotFoundException {
-        Optional<User> maybeUser = userDao.findById(userId);
+//    public double getBalance(int userId) throws UserNotFoundException {
+//        Optional<User> maybeUser = userDao.findById(userId);
+//
+//        if(maybeUser.isPresent()) {
+//            return maybeUser.get().getBalance();
+//        }
+//        throw new UserNotFoundException();
+//    }
 
-        if(maybeUser.isPresent()) {
-            return maybeUser.get().getBalance();
+    public void setBalance(UserDto userDto, double amountFromUser) {
+        if(amountFromUser < 0) {
+            throw new IllegalArgumentException("amount is negative");
         }
-        throw new UserNotFoundException();
+
+        double currentBalance = Double.parseDouble(userDto.getBalance());
+        double newBalance = currentBalance + amountFromUser;
+
+        try {
+            userDto.setBalance(String.valueOf(newBalance));
+            updateUser(userDto.getId(), userDto);
+        } catch (RuntimeException e) {
+            userDto.setBalance(String.valueOf(currentBalance));
+        }
     }
 
-    public void updateBalance(int userId, UserDto newUser) {
+    public void updateUser(int userId, UserDto newUser) {
         User user = userMapper.mapFrom(newUser);
         user.setId(userId);
         userDao.update(userMapper.mapFrom(newUser));

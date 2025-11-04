@@ -5,18 +5,14 @@ import dao.OrderDao;
 import dto.GoodDto;
 import dto.OrderDto;
 import dto.UserDto;
-import entity.Good;
-import entity.User;
 import exception.BalanceException;
 import exception.GoodNotFoundException;
-import exception.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import mapper.GoodMapper;
 import mapper.OrderMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderService {
@@ -35,8 +31,10 @@ public class OrderService {
 
     public void addOrder(UserDto userDto, OrderDto order) throws BalanceException {
         try {
-            double userBalance = userService.getBalance(order.getUserId());
+//            double userBalance = userService.getBalance(order.getUserId());
+            double userBalance = Double.parseDouble(userDto.getBalance());
             double goodCost = goodService.getCost(order.getGoodId());
+
 
             if(userBalance - goodCost < 0) {
                 throw new BalanceException("The balance lesser then cost of product");
@@ -45,9 +43,9 @@ public class OrderService {
             orderDao.save(orderMapper.mapFrom(order));
             userDto.setBalance("" + (userBalance - goodCost));
 
-            userService.updateBalance(order.getUserId(), userDto);
+            userService.    updateUser(order.getUserId(), userDto);
 
-        } catch (UserNotFoundException | GoodNotFoundException e) {
+        } catch (GoodNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

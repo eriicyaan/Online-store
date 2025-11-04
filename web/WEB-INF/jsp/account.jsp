@@ -19,9 +19,9 @@
             </c:if>
 
             <c:if test="${sessionScope.role == 'USER'}">
-                <a href="${pageContext.request.contextPath}/basket?user_id=${sessionScope.user.id}"><button type="button">Корзина</button></a>
+                <a href="${pageContext.request.contextPath}/basket"><button type="button">Корзина</button></a>
                 <a href="${pageContext.request.contextPath}/order"><button type="button">Список заказов</button></a>
-                <p style="position: absolute; top: 0; right: 0;">Balance: ${user.balance}</p>
+                <%@ include file="balance.jsp"%>
             </c:if>
 
             <a href="${pageContext.request.contextPath}/goods"><button type="button">Список товаров</button></a>
